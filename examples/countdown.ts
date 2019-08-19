@@ -4,7 +4,7 @@ import { delay } from "https://deno.land/std@826deb1/util/async.ts";
 
 async function main() {
   for await (let x of iterate(values([3, 2, 1]))) {
-    console.log(x + '...');
+    console.log(x + "...");
     await delay(1000);
   }
 

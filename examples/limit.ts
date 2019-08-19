@@ -11,7 +11,7 @@ let randoms: Source<number> = function(end, cont) {
   }
 };
 
-async function main () {
+async function main() {
   for await (let x of iterate(take(5)(randoms))) {
     console.log(x);
   }
