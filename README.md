@@ -28,10 +28,10 @@ import { map } from "https://raw.githubusercontent.com/crabmusket/deno_pull_stre
 import { values } from "https://raw.githubusercontent.com/crabmusket/deno_pull_streams/v0.1/lib/values.ts"
 import { each } from "https://raw.githubusercontent.com/crabmusket/deno_pull_streams/v0.1/lib/each.ts"
 
-let log = each(x => console.log(x))
+let numbers = values([1, 2, 3]);
 let increment = map(x => x + 1);
-let stream = values([1, 2, 3]);
-log(increment(stream));
+let log = each(x => console.log(x))
+log(increment(numbers));
 ```
 
 Infinite streams!
@@ -49,8 +49,8 @@ let randoms: Source<number> = function(end, cont) {
   }
 };
 
-let log = each(x => console.log(x))
 let first5 = take(5);
+let log = each(x => console.log(x))
 log(first5(randoms));
 ```
 
