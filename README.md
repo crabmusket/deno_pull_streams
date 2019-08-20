@@ -4,6 +4,23 @@
 
 A port of [pull-stream](https://github.com/pull-stream/pull-stream) to TypeScript for use with [Deno](https://deno.land).
 
+<!-- MDTOC maxdepth:6 firsth1:0 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+- [Two quick examples](#two-quick-examples)   
+- [What are pull streams?](#what-are-pull-streams)   
+- [Why use pull streams?](#why-use-pull-streams)   
+- [Why did you port this library?](#why-did-you-port-this-library)   
+- [Handbook of modules in this library](#handbook-of-modules-in-this-library)   
+   - [Core API](#core-api)   
+   - [Sources](#sources)   
+   - [Throughs](#throughs)   
+   - [Sinks](#sinks)   
+- [Roadmap](#roadmap)   
+
+<!-- /MDTOC -->
+
+## Two quick examples
+
 A basic example:
 
 ```typescript
@@ -38,3 +55,53 @@ log(first5(randoms));
 ```
 
 See [examples](./examples) for more.
+
+## What are pull streams?
+
+See [lib/types.ts](./lib/types.ts) for a readable introduction to the core abstractions of pull streams.
+
+## Why use pull streams?
+
+From [Dominic Tarr](https://dominictarr.com/post/149248845122/pull-streams-pull-streams-are-a-very-simple), creator of pull-stream:
+
+> node.js streams have the concept of a “writable” stream. A writable is a passive object that accepts data, like a couch-potato watching the TV. They must actively use the TV remote to send an explicit signal to the TV when they want to stop or slow down. A pull-stream sink is a reader. it is like a book-worm reading a book - they are active and can read faster or slower. They don’t need to send an explicit signal to slow down, they just act slower.
+
+I got into pull streams when I needed to stream large JSON files from disk into a database, but existing libraries couldn't usefully handle back-pressure (e.g. stop loading data from disk while rows were inserted into the database).
+
+Pull streams are elegant and fun!
+
+## Why did you port this library?
+
+- To add quality type declarations throughout, and tweak the APIs to be more friendly to statically-typed usage and type inference.
+- To make APIs that use Promises and async iteration. Internally, the structure of pull streams still works on callbacks and recursion, but sinks like [reduce](./lib/reduce.ts) now use Promises to play nicely with `await`.
+- To make it compatible with ESM imports/Deno, including providing ready-to-go stream helpers that work with Deno's API and standard library.
+- To learn more about how pull streams work by implementing them.
+
+## Handbook of modules in this library
+
+### Core API
+
+- [types.ts](./lib/types.ts) describes the core abstractions of pull-streams with generic types.
+
+### Sources
+
+- [values.ts](./lib/values.ts) creates a Source from an array of values.
+
+### Throughs
+
+- [map.ts](./lib/map.ts) transforms each element in a stream, either keeping their type or returning an entirely new type.
+- [take.ts](./lib/take.ts) takes a limited number of elements from a stream, converting an infinite stream into a finite one.
+
+### Sinks
+
+- [each.ts](./lib/each.ts) simply calls a callback on each element of the stream it encounters. If the callback returns a Promise, `each` will wait for the promise to resolve before continuing.
+- [reduce.ts](./lib/reduce.ts) reduces all values of a stream into a single value, returning a Promise so you can `await` on the result.
+- [iterate.ts](./lib/iterate.ts) converts a stream into an async iterator for use with `for await` syntax. See [examples/countdown.ts](./examples/countdown.ts).
+
+## Roadmap
+
+- Implement more of the pull-stream library abstractions.
+- Implement Deno specific library streams (e.g. a file reading stream, UTF-8 chunking, what else?).
+- Tests!!
+- Sort into folders like the pull-stream repo?
+- Any API changes? Decide on whether sinks should use Promise internally, or loop like [drain](https://github.com/pull-stream/pull-stream/blob/master/sinks/drain.js)
