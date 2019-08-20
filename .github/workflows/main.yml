@@ -9,9 +9,12 @@ jobs:
     - uses: actions/checkout@v1
     - name: Install Deno
       run: |
-        curl -fsSL https://deno.land/x/install/install.sh | sh
+        curl -fsSL https://deno.land/x/install/install.sh | sh -s v0.15.0
     - name: Run deno fmt and make sure nothing changes
       run: |
         export PATH="/home/runner/.deno/bin:$PATH"
-        deno fmt ./lib/*.ts
-        deno fmt ./examples/*.ts
+        # pre-fetch prettier so that it's not fetched again when running deno fmt
+        # the version of std used is hardcoded in the deno binary; make sure to match it
+        deno fetch https://deno.land/std@v0.11/prettier/main.ts
+        if [[ $(deno fmt lib/*.ts) ]]; then exit 1; fi
+        if [[ $(deno fmt examples/*.ts) ]]; then exit 1; fi
