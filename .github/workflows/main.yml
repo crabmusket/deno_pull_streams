@@ -8,8 +8,10 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install Deno
-      run: curl -fsSL https://deno.land/x/install/install.sh | sh
+      run: |
+        curl -fsSL https://deno.land/x/install/install.sh | sh
     - name: Run deno fmt and make sure nothing changes
       run: |
+        export PATH="/home/runner/.deno/bin:$PATH"
         deno fmt ./lib/*.ts
         deno fmt ./examples/*.ts
