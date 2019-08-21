@@ -148,4 +148,6 @@ sink(through(source()));
 - Implement Deno specific library streams (e.g. a file reading stream, UTF-8 chunking, what else?).
 - Tests!!
 - Sort into folders like the pull-stream repo?
-- Any API changes? Decide on whether sinks should use Promise internally, or loop like [drain](https://github.com/pull-stream/pull-stream/blob/master/sinks/drain.js)
+- Any API changes?
+    - Decide on whether sinks should use Promise internally, or loop like [drain](https://github.com/pull-stream/pull-stream/blob/master/sinks/drain.js)
+    - Should creating `Sink`s be encouraged (`reduce(cb, 0)(source)`), or should they be "inlined" to match the functionalish API (`reduce(cb, 0, source)`)? The former is better for reusing components, the latter is better for writing pipelines as expressions.
