@@ -4,8 +4,8 @@ export function reduce<V, R>(
   reducer: (accum: R, current: V) => R,
   initial: R
 ): Sink<V, Promise<R>> {
-  let accumulator = initial;
   return function reduceSink(read: Source<V>): Promise<R> {
+    let accumulator = initial;
     return new Promise((resolve, reject) => {
       function cont(end: End, value: V | undefined) {
         if (end) {
