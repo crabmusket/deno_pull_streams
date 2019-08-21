@@ -15,6 +15,7 @@ A port of [pull-stream](https://github.com/pull-stream/pull-stream) to TypeScrip
    - [Sources](#sources)   
    - [Throughs](#throughs)   
    - [Sinks](#sinks)   
+- [`pull` is missing!](#pull-is-missing)   
 - [Roadmap](#roadmap)   
 
 <!-- /MDTOC -->
@@ -97,6 +98,49 @@ Pull streams are elegant and fun!
 - [each.ts](./lib/each.ts) simply calls a callback on each element of the stream it encounters. If the callback returns a Promise, `each` will wait for the promise to resolve before continuing.
 - [reduce.ts](./lib/reduce.ts) reduces all values of a stream into a single value, returning a Promise so you can `await` on the result.
 - [iterate.ts](./lib/iterate.ts) converts a stream into an async iterator for use with `for await` syntax. See [examples/countdown.ts](./examples/countdown.ts).
+
+## `pull` is missing!
+
+A key feature of the pull-stream library is its `pull` helper function which can combine pull streams in an ergonomic fashion.
+Instead of writing
+
+```js
+sink(through2(through1(source())))
+```
+
+the `pull` helper lets you write this:
+
+```js
+pull(
+  source(),
+  through1,
+  through2,
+  sink
+)
+```
+
+It can even combine streams in a smart way, detecting their types by the number of arguments they take:
+
+```js
+let through = pull(through1, through2);
+pull(
+  source(),
+  through,
+  sink
+)
+```
+
+I have decided not to try to port this function.
+I _may_ create some kind of fluent 'builder' helper for those who really want a 'forwards' API, but I think it's fairly straightforward, and better for static typing, to stick with the more 'functional' interface.
+Here's an example of composing throughs:
+
+```typescript
+let through1: Through<number> = filter(n => n > 10);
+let through2 = take(5);
+// pass the `s` argument explicitly:
+let through = s => through2(through1(s));
+sink(through(source()));
+```
 
 ## Roadmap
 
