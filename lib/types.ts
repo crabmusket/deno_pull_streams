@@ -13,7 +13,7 @@ export type End = null | true | Error;
 export type Sink<V, R = void> = (read: Source<V>) => R;
 
 /** A Source is a producer of values for a pull stream. */
-export type Source<V> = (end: End, next: Cont<V> | null) => void;
+export type Source<V> = (end: End, next: Cont<V>) => void;
 
 /** A Cont (continuation) is a callback that receives data from a source. */
 export type Cont<V> = (end: End, value: V | undefined) => void;

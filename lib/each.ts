@@ -1,13 +1,13 @@
-import { Cont, End, Source, Sink } from "./types.ts";
+import { End, Source, Sink } from "./types.ts";
 
 export function each<V>(callback: (v: V) => unknown): Sink<V> {
   return function eachSink(read: Source<V>) {
-    function cont(end, value) {
+    function cont(end: End, value: V | undefined) {
       if (end) {
         return;
       }
 
-      let result = callback(value);
+      let result = callback(value!);
       if (result instanceof Promise) {
         result.then(() => read(null, cont));
       } else {

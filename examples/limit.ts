@@ -1,5 +1,4 @@
 import { Source } from "../lib/types.ts";
-import { values } from "../lib/values.ts";
 import { iterate } from "../lib/iterate.ts";
 import { take } from "../lib/take.ts";
 
