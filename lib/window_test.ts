@@ -13,7 +13,7 @@ test(async function basicWindow() {
   assertEquals([2, 3, 4], (await iterator.next()).value);
   assertEquals([3, 4, 5], (await iterator.next()).value);
   assertEquals([4, 5, 6], (await iterator.next()).value);
-  assertEquals({done: true, value: undefined}, await iterator.next());
+  assertEquals({ done: true, value: undefined }, await iterator.next());
 });
 
 test(async function emptyWindow() {
@@ -21,7 +21,7 @@ test(async function emptyWindow() {
   let windower = window(3);
   let stream = iterate(windower(numbers));
   let iterator = stream[Symbol.asyncIterator]();
-  assertEquals({done: true, value: undefined}, await iterator.next());
+  assertEquals({ done: true, value: undefined }, await iterator.next());
 });
 
 runIfMain(import.meta.main);
