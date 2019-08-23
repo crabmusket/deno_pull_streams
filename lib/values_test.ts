@@ -1,5 +1,4 @@
-import { test, runTests } from "https://deno.land/std@v0.11.0/testing/mod.ts";
-import { assertEquals } from "https://deno.land/std@v0.11.0/testing/asserts.ts";
+import { test, assertEquals, runIfMain } from "./_test_utils.ts";
 import { values } from "./values.ts";
 
 test(async function emptyValues() {
@@ -36,6 +35,4 @@ test(async function twoValues() {
   });
 });
 
-if (import.meta.main) {
-  runTests();
-}
+runIfMain(import.meta.main);
