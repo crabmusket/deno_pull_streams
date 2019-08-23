@@ -30,5 +30,7 @@ jobs:
         if [[ $(deno fmt **/*.ts) ]]; then exit 1; fi
     - name: Run tests
       run: |
+        set -x
         export PATH="/home/runner/.deno/bin:$PATH"
+        echo $PATH
         deno -A test
