@@ -28,7 +28,9 @@ export type Sink<Value, Result = void> = (read: Source<Value>) => Result;
  * A Through is a transformer from Source to Source. It might change the type of
  * the data that flows through it from Before to After.
  */
-export type Through<Before, After = Before> = (read: Source<Before>) => Source<After>;
+export type Through<Before, After = Before> = (
+  read: Source<Before>
+) => Source<After>;
 
 /**
  * End is the signal propagated to end the stream. Sources, Sinks, and Throughs

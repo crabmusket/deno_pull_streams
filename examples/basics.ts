@@ -20,13 +20,13 @@ function logNumbers(read: Source<number>): void {
     // When the continuation is called, either `end` or `value` will be passed.
     // We check `end` first to see if the source is out of data.
     if (end) {
-      console.log('no more numbers to print!');
+      console.log("no more numbers to print!");
       return;
     }
 
     if (!value) {
       // This is an illegal call, and it means a programmer has made an error!
-      throw new Error('continuation called without end or value');
+      throw new Error("continuation called without end or value");
     }
 
     // Perform the actual work our sink is meant for: logging the data!
