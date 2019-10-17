@@ -1,6 +1,6 @@
 # deno_pull_streams
 
-![badge: version is 0.1 (unstable)](https://img.shields.io/badge/version-0.1%20%28unstable%29-red)
+![badge: version is 0.2 (unstable)](https://img.shields.io/badge/version-0.2%20%28unstable%29-red)
 
 A port of [pull-stream](https://github.com/pull-stream/pull-stream) to TypeScript for use with [Deno](https://deno.land).
 
@@ -27,9 +27,9 @@ A port of [pull-stream](https://github.com/pull-stream/pull-stream) to TypeScrip
 Print a series of numbers to the console:
 
 ```typescript
-import { map } from "https://raw.githubusercontent.com/crabmusket/deno_pull_streams/v0.1/lib/map.ts"
-import { values } from "https://raw.githubusercontent.com/crabmusket/deno_pull_streams/v0.1/lib/values.ts"
-import { each } from "https://raw.githubusercontent.com/crabmusket/deno_pull_streams/v0.1/lib/each.ts"
+import { map } from "https://raw.githubusercontent.com/crabmusket/deno_pull_streams/v0.2/lib/map.ts"
+import { values } from "https://raw.githubusercontent.com/crabmusket/deno_pull_streams/v0.2/lib/values.ts"
+import { each } from "https://raw.githubusercontent.com/crabmusket/deno_pull_streams/v0.2/lib/each.ts"
 
 let numbers = values([1, 2, 3]);
 let increment = map(x => x + 1);
@@ -40,9 +40,9 @@ log(increment(numbers));
 Print a series of random numbers using infinite streams!
 
 ```typescript
-import { Source } from "https://raw.githubusercontent.com/crabmusket/deno_pull_streams/v0.1/lib/types.ts"
-import { take } from "https://raw.githubusercontent.com/crabmusket/deno_pull_streams/v0.1/lib/take.ts"
-import { each } from "https://raw.githubusercontent.com/crabmusket/deno_pull_streams/v0.1/lib/each.ts"
+import { Source } from "https://raw.githubusercontent.com/crabmusket/deno_pull_streams/v0.2/lib/types.ts"
+import { take } from "https://raw.githubusercontent.com/crabmusket/deno_pull_streams/v0.2/lib/take.ts"
+import { each } from "https://raw.githubusercontent.com/crabmusket/deno_pull_streams/v0.2/lib/each.ts"
 
 function randoms(): Source<number> {
   return function(end, cont) {
