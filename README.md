@@ -60,6 +60,7 @@ See [examples](./examples) for more.
 ## What are pull streams?
 
 See [lib/types.ts](./lib/types.ts) for a readable introduction to the core abstractions of pull streams.
+Then take a look at [examples/basics.ts](./examples/basics.ts) for a walk through creating your first pull stream pipeline.
 
 ## Why use pull streams?
 
