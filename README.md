@@ -7,22 +7,24 @@ A port of [pull-stream](https://github.com/pull-stream/pull-stream) to TypeScrip
 <!-- MDTOC maxdepth:6 firsth1:0 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
 
 - [Two quick examples](#two-quick-examples)   
-- [What are pull streams?](#what-are-pull-streams)   
-- [Why use pull streams?](#why-use-pull-streams)   
-- [Why did you port this library?](#why-did-you-port-this-library)   
 - [Handbook of modules in this library](#handbook-of-modules-in-this-library)   
    - [Core API](#core-api)   
    - [Sources](#sources)   
    - [Throughs](#throughs)   
    - [Sinks](#sinks)   
-- [`pull` is missing!](#pull-is-missing)   
+- [FAQ](#faq)   
+   - [What are pull streams?](#what-are-pull-streams)   
+   - [Why use pull streams?](#why-use-pull-streams)   
+   - [When should pull streams not be used?](#when-should-pull-streams-not-be-used)   
+   - [Why did you port this library?](#why-did-you-port-this-library)   
+   - [`pull` is missing!](#pull-is-missing)   
 - [Roadmap](#roadmap)   
 
 <!-- /MDTOC -->
 
 ## Two quick examples
 
-A basic example:
+Print a series of numbers to the console:
 
 ```typescript
 import { map } from "https://raw.githubusercontent.com/crabmusket/deno_pull_streams/v0.1/lib/map.ts"
@@ -35,20 +37,22 @@ let log = each(x => console.log(x))
 log(increment(numbers));
 ```
 
-Infinite streams!
+Print a series of random numbers using infinite streams!
 
 ```typescript
 import { Source } from "https://raw.githubusercontent.com/crabmusket/deno_pull_streams/v0.1/lib/types.ts"
 import { take } from "https://raw.githubusercontent.com/crabmusket/deno_pull_streams/v0.1/lib/take.ts"
 import { each } from "https://raw.githubusercontent.com/crabmusket/deno_pull_streams/v0.1/lib/each.ts"
 
-let randoms: Source<number> = function(end, cont) {
-  if (end) {
-    cont(end, undefined);
-  } else {
-    cont(null, Math.random());
-  }
-};
+function randoms(): Source<number> {
+  return function(end, cont) {
+    if (end) {
+      cont(end, undefined);
+    } else {
+      cont(null, Math.random());
+    }
+  };
+}
 
 let first5 = take(5);
 let log = each(x => console.log(x))
@@ -57,33 +61,11 @@ log(first5(randoms));
 
 See [examples](./examples) for more.
 
-## What are pull streams?
-
-See [lib/types.ts](./lib/types.ts) for a readable introduction to the core abstractions of pull streams.
-Then take a look at [examples/basics.ts](./examples/basics.ts) for a walk through creating your first pull stream pipeline.
-
-## Why use pull streams?
-
-From [Dominic Tarr](https://dominictarr.com/post/149248845122/pull-streams-pull-streams-are-a-very-simple), creator of pull-stream:
-
-> node.js streams have the concept of a “writable” stream. A writable is a passive object that accepts data, like a couch-potato watching the TV. They must actively use the TV remote to send an explicit signal to the TV when they want to stop or slow down. A pull-stream sink is a reader. it is like a book-worm reading a book - they are active and can read faster or slower. They don’t need to send an explicit signal to slow down, they just act slower.
-
-I got into pull streams when I needed to stream large JSON files from disk into a database, but existing libraries couldn't usefully handle back-pressure (e.g. stop loading data from disk while rows were inserted into the database).
-
-Pull streams are elegant and fun!
-
-## Why did you port this library?
-
-- To add quality type declarations throughout, and tweak the APIs to be more friendly to statically-typed usage and type inference.
-- To make APIs that use Promises and async iteration. Internally, the structure of pull streams still works on callbacks and recursion, but sinks like [reduce](./lib/reduce.ts) now use Promises to play nicely with `await`.
-- To make it compatible with ESM imports/Deno, including providing ready-to-go stream helpers that work with Deno's API and standard library.
-- To learn more about how pull streams work by implementing them.
-
 ## Handbook of modules in this library
 
 ### Core API
 
-- [types.ts](./lib/types.ts) describes the core abstractions of pull-streams with generic types.
+- [types.ts](./lib/types.ts) describes the core abstractions of pull streams with generic types.
 
 ### Sources
 
@@ -100,9 +82,41 @@ Pull streams are elegant and fun!
 - [reduce.ts](./lib/reduce.ts) reduces all values of a stream into a single value, returning a Promise so you can `await` on the result.
 - [iterate.ts](./lib/iterate.ts) converts a stream into an async iterator for use with `for await` syntax. See [examples/countdown.ts](./examples/countdown.ts).
 
-## `pull` is missing!
+## FAQ
 
-A key feature of the pull-stream library is its `pull` helper function which can combine pull streams in an ergonomic fashion.
+### What are pull streams?
+
+See [lib/types.ts](./lib/types.ts) for a readable introduction to the core abstractions of pull streams.
+Then take a look at [examples/basics.ts](./examples/basics.ts) for a walk through creating your first pull stream pipeline.
+
+### Why use pull streams?
+
+From the blog of [Dominic Tarr](https://dominictarr.com/post/149248845122/pull-streams-pull-streams-are-a-very-simple), creator of pull-stream:
+
+> node.js streams have the concept of a “writable” stream. A writable is a passive object that accepts data, like a couch-potato watching the TV. They must actively use the TV remote to send an explicit signal to the TV when they want to stop or slow down. A pull-stream sink is a reader. it is like a book-worm reading a book - they are active and can read faster or slower. They don’t need to send an explicit signal to slow down, they just act slower.
+
+I got into pull streams when I needed to stream large JSON files from disk into a database, but existing libraries couldn't usefully handle back-pressure (e.g. stop loading data from disk while rows were inserted into the database).
+
+Pull streams are elegant and fun!
+
+### When should pull streams not be used?
+
+The most important feature of pull streams is that they are _pulled_: the sink, the reader, controls the speed of the flow.
+Sometimes that doesn't fit your use-case, and it may be simpler to just map over an ordinary stream.
+
+If the consumer of data is expected to be faster than the producer (e.g. streaming from the network to a file on disk), pull streams' advantage is lessened.
+That said, there are few disadvantages to using pull streams even in those cases - so if you're comfortable with them, go right ahead!
+
+### Why did you port this library?
+
+- To add quality type declarations throughout, and tweak the APIs to be more friendly to statically-typed usage and type inference.
+- To make APIs that use Promises and async iteration. Internally, the structure of pull streams still works on callbacks and recursion, but sinks like [reduce](./lib/reduce.ts) now use Promises to play nicely with `await`.
+- To make it compatible with ESM imports/Deno, including providing ready-to-go stream helpers that work with Deno's API and standard library.
+- To learn more about how pull streams work by implementing them.
+
+### `pull` is missing!
+
+A key feature of the `pull-stream` library is its `pull` helper function which can combine pull streams in an ergonomic fashion.
 Instead of writing
 
 ```js
@@ -145,7 +159,7 @@ sink(through(source()));
 
 ## Roadmap
 
-- Implement more of the pull-stream library abstractions.
+- Implement more of the `pull-stream` library abstractions.
 - Implement Deno specific library streams (e.g. a file reading stream, UTF-8 chunking, what else?).
 - Tests!!
 - Sort into folders like the pull-stream repo?
