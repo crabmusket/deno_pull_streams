@@ -16,13 +16,13 @@ jobs:
     - name: Install Deno and Prettier
       run: |
         set -x
-        curl -fsSL https://deno.land/x/install/install.sh | sh -s v0.16.0
+        curl -fsSL https://deno.land/x/install/install.sh | sh -s v0.20.0
         export PATH="/home/runner/.deno/bin:$PATH"
         # pre-fetch prettier so that it's not fetched again when running deno fmt
         # the version of std used is hardcoded in the deno binary; make sure to match it
-        deno fetch https://deno.land/std@v0.11/prettier/main.ts
+        deno fetch https://deno.land/std@8c90bd9/prettier/main.ts
         # pre-fetch test runner too so the test output is cleaner
-        deno fetch https://deno.land/std@4531fa8/testing/runner.ts
+        deno fetch https://deno.land/std@8c90bd9/testing/runner.ts
     - name: Run deno fmt and make sure nothing changes
       run: |
         set -x
