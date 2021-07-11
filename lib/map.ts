@@ -1,4 +1,4 @@
-import { Cont, End, Source, Through } from "./types.ts";
+import { Cont, End, Source, Through } from './types.ts';
 
 type MapCallback<V, W> = ((v: V) => Promise<W>) | ((v: V) => W);
 
